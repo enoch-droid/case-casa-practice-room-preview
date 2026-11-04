@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Case Casa Practice Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&family=Hanken+Grotesk:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="banner" class="banner" role="alert" hidden></div>
+
+<header class="appbar">
+  <div class="appbar-top">
+    <a class="brand" href="./"><span class="brand-mark" aria-hidden="true"></span>Case Casa <span>Practice Room</span></a>
+    <button id="navResults" class="nav-link" type="button">My results</button>
+  </div>
+  <ol id="stepper" class="stepper" aria-label="Your progress">
+    <li data-step="1"><span class="dot">1</span><span class="lbl">Choose a case</span></li>
+    <li data-step="2"><span class="dot">2</span><span class="lbl">Set it up</span></li>
+    <li data-step="3"><span class="dot">3</span><span class="lbl">Test your mic</span></li>
+    <li data-step="4"><span class="dot">4</span><span class="lbl">Interview</span></li>
+    <li data-step="5"><span class="dot">5</span><span class="lbl">Your results</span></li>
+  </ol>
+</header>
+
+<!-- Step 1 -->
+<main id="step1" class="page view" hidden>
+  <p class="kicker">Step 1 of 5</p>
+  <h1>Which interview do you want to <em>practise?</em></h1>
+  <p class="lead">Talk through a case out loud with an AI interviewer. Afterwards, get an interviewer's assessment of how you structured the problem, used the data and reached a recommendation.</p>
+  <div id="cases" class="categories"></div>
+  <div class="actions"><span id="picked" class="picked"></span><button id="to2" class="primary" type="button" disabled>Next: set it up <i aria-hidden="true">→</i></button></div>
+</main>
+
+<!-- Step 2 -->
+<main id="step2" class="page view" hidden>
+  <p class="kicker">Step 2 of 5</p>
+  <h1>Set up your <em>interview</em></h1>
+  <p class="lead" id="chosenCase"></p>
+
+  <section class="field">
+    <h2>Do you want feedback as you go?</h2>
+    <div class="choices" id="feedbackChoice" role="radiogroup" aria-label="Feedback"></div>
+  </section>
+
+  <section class="field">
+    <h2>How much time do you have?</h2>
+    <div class="choices" id="lengthChoice" role="radiogroup" aria-label="Length"></div>
+    <div id="partRow" class="subfield" hidden>
+      <label for="part">Which part?</label>
+      <select id="part"></select>
+    </div>
+  </section>
+
+  <section class="field" id="formatRow">
+    <h2>Who leads the case?</h2>
+    <div class="choices" id="formatChoice" role="radiogroup" aria-label="Who leads"></div>
+  </section>
+
+  <section class="field">
+    <h2>How tough should the interviewer be?</h2>
+    <div class="choices three" id="pressureChoice" role="radiogroup" aria-label="Interviewer style"></div>
+  </section>
+
+  <section class="field">
+    <h2><label for="name">Your name</label></h2>
+    <input id="name" autocomplete="name" placeholder="So we can track your progress">
+  </section>
+
+  <div class="actions">
+    <button class="ghost back" data-to="1" type="button"><i aria-hidden="true">←</i> Back</button>
+    <button id="to3" class="primary" type="button">Next: test your mic <i aria-hidden="true">→</i></button>
+  </div>
+</main>
+
+<!-- Step 3 -->
+<main id="step3" class="page view" hidden>
+  <p class="kicker">Step 3 of 5</p>
+  <h1>Let's check we can <em>hear you</em></h1>
+  <p class="lead">Say a sentence with a number in it, such as "Profit fell by 24 million dollars".</p>
+
+  <div class="panel mic-panel">
+    <div class="meter" aria-hidden="true"><i id="micBar"></i></div>
+    <p id="micStatus" class="mic-status" role="status">Starting your microphone…</p>
+    <p id="micHeard" class="mic-heard"></p>
+    <div class="row">
+      <button id="testVoice" class="ghost" type="button">Play the interviewer's voice</button>
+    </div>
+  </div>
+
+  <div class="field">
+    <div class="subfield">
+      <label for="lang">Your accent</label>
+      <select id="lang">
+        <option value="en-US">English (US)</option>
+        <option value="en-GB">English (UK)</option>
+        <option value="en-HK">English (Hong Kong)</option>
+        <option value="en-SG">English (Singapore)</option>
+        <option value="en-IN">English (India)</option>
+        <option value="en-AU">English (Australia)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="panel summary">
+    <h2>Your interview</h2>
+    <ul id="summary"></ul>
+  </div>
+
+  <div class="actions">
+    <button class="ghost back" data-to="2" type="button"><i aria-hidden="true">←</i> Back</button>
+    <button id="start" class="primary big" type="button">Start my interview <i aria-hidden="true">→</i></button>
+  </div>
+</main>
+
+<!-- Step 4 -->
+<main id="room" class="room view" hidden>
+  <div class="roombar">
+    <div class="roombar-title"><b id="roomTitle"></b><span id="timer" class="timer" aria-label="Time elapsed">0:00</span></div>
+    <div class="case-track">
+      <ol id="caseProgress" class="case-progress" aria-label="Interview sections"></ol>
+      <div class="progress" role="progressbar" id="progress" aria-label="Interview progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="track"><i id="pctBar"></i></div>
+        <span id="pct" class="pct">0%</span>
+      </div>
+    </div>
+    <div class="roombar-controls">
+      <label class="toggle">
+        <input type="checkbox" id="feedbackRoom">
+        <span class="switch" aria-hidden="true"></span>
+        <span>Coach tips</span>
+      </label>
+      <button id="endBtn" class="ghost small" type="button">End interview</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <aside class="side left">
+      <section>
+        <h2>Exhibits</h2>
+        <p id="noExhibits" class="empty">Charts and data appear here when the interviewer shares them.</p>
+        <div id="exhibits"></div>
+      </section>
+      <section>
+        <h2><label for="notes">Your notes</label></h2>
+        <textarea id="notes" rows="6" placeholder="Jot down your structure and maths"></textarea>
+      </section>
+    </aside>
+
+    <div class="centre">
+      <ol id="turnGuide" class="turn-guide" aria-label="What to do now">
+        <li data-turn="listen"><span>1</span>Listen</li>
+        <li data-turn="think"><span>2</span>Think</li>
+        <li data-turn="speak"><span>3</span>Speak</li>
+      </ol>
+      <div id="orb" class="orb" data-state="idle" aria-hidden="true"><i></i><i></i></div>
+      <div id="stateLabel" class="state-label" role="status" aria-live="polite">Connecting</div>
+      <div id="stateHint" class="state-hint"></div>
+      <button id="talk" class="primary big talk" type="button" disabled>Please wait</button>
+      <div id="coach" class="coach" hidden aria-live="polite"></div>
+      <details class="typed">
+        <summary>Prefer to type?</summary>
+        <textarea id="typed" rows="3" placeholder="Type your answer"></textarea>
+        <button id="sendTyped" class="ghost small" type="button">Send answer</button>
+      </details>
+    </div>
+
+    <aside class="side right" aria-label="Transcript">
+      <h2>Transcript</h2>
+      <div id="transcript" class="transcript" aria-live="off"></div>
+    </aside>
+  </div>
+</main>
+
+<!-- Step 5 -->
+<main id="report" class="page view" hidden>
+  <div id="reportBody"></div>
+  <div class="actions">
+    <a id="exportLink" class="ghost btnlink" href="#">Download transcript</a>
+    <span class="grow"></span>
+    <button id="backHome" class="ghost" type="button">Practise again</button>
+    <a class="primary btnlink" href="https://cal.com/casecasacoaching/coachingsession" target="_blank" rel="noopener">Review this with a coach <i aria-hidden="true">→</i></a>
+  </div>
+</main>
+
+<!-- My results -->
+<main id="results" class="page view" hidden>
+  <h1>My <em>results</em></h1>
+  <p class="lead" id="resultsLead"></p>
+  <ul id="history" class="history"></ul>
+  <div class="actions"><button id="resultsBack" class="ghost" type="button"><i aria-hidden="true">←</i> Back to practice</button></div>
+</main>
+
+<script src="preview.js"></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>
