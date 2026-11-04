@@ -4,198 +4,171 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Case Casa Practice Room</title>
+<title>Case Casa Practice Room: AI case interview practice</title>
+<meta name="description" content="Practise consulting case and fit interviews out loud with an AI interviewer, then get an interviewer's assessment of your problem solving.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&family=Hanken+Grotesk:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="landing.css">
 </head>
-<body>
-<div id="banner" class="banner" role="alert" hidden></div>
-
-<header class="appbar">
-  <div class="appbar-top">
-    <a class="brand" href="./"><span class="brand-mark" aria-hidden="true"></span>Case Casa <span>Practice Room</span></a>
-    <button id="navResults" class="nav-link" type="button">My results</button>
-  </div>
-  <ol id="stepper" class="stepper" aria-label="Your progress">
-    <li data-step="1"><span class="dot">1</span><span class="lbl">Choose a case</span></li>
-    <li data-step="2"><span class="dot">2</span><span class="lbl">Set it up</span></li>
-    <li data-step="3"><span class="dot">3</span><span class="lbl">Test your mic</span></li>
-    <li data-step="4"><span class="dot">4</span><span class="lbl">Interview</span></li>
-    <li data-step="5"><span class="dot">5</span><span class="lbl">Your results</span></li>
-  </ol>
+<body class="landing">
+<div class="banner">Preview: try the full flow with a scripted interviewer and sample results. The live version uses AI.</div>
+<header class="lnav">
+  <a class="brand" href="./"><span class="brand-mark" aria-hidden="true"></span>Case Casa <span>Practice Room</span></a>
+  <nav aria-label="Main">
+    <a href="#how">How it works</a>
+    <a href="#results">Your results</a>
+    <a href="#cases">Cases</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <a class="primary small-cta" href="practice.html">Start practising</a>
 </header>
 
-<!-- Step 1 -->
-<main id="step1" class="page view" hidden>
-  <p class="kicker">Step 1 of 5</p>
-  <h1>Which interview do you want to <em>practise?</em></h1>
-  <p class="lead">Talk through a case out loud with an AI interviewer. Afterwards, get an interviewer's assessment of how you structured the problem, used the data and reached a recommendation.</p>
-  <div id="cases" class="categories"></div>
-  <div class="actions"><span id="picked" class="picked"></span><button id="to2" class="primary" type="button" disabled>Next: set it up <i aria-hidden="true">→</i></button></div>
-</main>
-
-<!-- Step 2 -->
-<main id="step2" class="page view" hidden>
-  <p class="kicker">Step 2 of 5</p>
-  <h1>Set up your <em>interview</em></h1>
-  <p class="lead" id="chosenCase"></p>
-
-  <section class="field">
-    <h2>Do you want feedback as you go?</h2>
-    <div class="choices" id="feedbackChoice" role="radiogroup" aria-label="Feedback"></div>
-  </section>
-
-  <section class="field">
-    <h2>How much time do you have?</h2>
-    <div class="choices" id="lengthChoice" role="radiogroup" aria-label="Length"></div>
-    <div id="partRow" class="subfield" hidden>
-      <label for="part">Which part?</label>
-      <select id="part"></select>
+<main>
+  <section class="lhero">
+    <div class="lhero-copy">
+      <p class="kicker">AI interview practice for consulting</p>
+      <h1>Rehearse the case <em>before it counts.</em></h1>
+      <p class="lead">Talk through a full case out loud with an AI interviewer that pushes back, shares exhibits and changes direction. Then see how an interviewer would assess your thinking.</p>
+      <div class="row">
+        <a class="primary big" href="practice.html">Start an interview <i aria-hidden="true">→</i></a>
+        <a class="ghost big" href="#how">See how it works</a>
+      </div>
+      <ul class="lhero-notes">
+        <li>Voice only, no camera</li>
+        <li>Any time of day</li>
+        <li>From the team at Case Casa Coaching</li>
+      </ul>
     </div>
-  </section>
 
-  <section class="field" id="formatRow">
-    <h2>Who leads the case?</h2>
-    <div class="choices" id="formatChoice" role="radiogroup" aria-label="Who leads"></div>
-  </section>
-
-  <section class="field">
-    <h2>How tough should the interviewer be?</h2>
-    <div class="choices three" id="pressureChoice" role="radiogroup" aria-label="Interviewer style"></div>
-  </section>
-
-  <section class="field">
-    <h2><label for="name">Your name</label></h2>
-    <input id="name" autocomplete="name" placeholder="So we can track your progress">
-  </section>
-
-  <div class="actions">
-    <button class="ghost back" data-to="1" type="button"><i aria-hidden="true">←</i> Back</button>
-    <button id="to3" class="primary" type="button">Next: test your mic <i aria-hidden="true">→</i></button>
-  </div>
-</main>
-
-<!-- Step 3 -->
-<main id="step3" class="page view" hidden>
-  <p class="kicker">Step 3 of 5</p>
-  <h1>Let's check we can <em>hear you</em></h1>
-  <p class="lead">Say a sentence with a number in it, such as "Profit fell by 24 million dollars".</p>
-
-  <div class="panel mic-panel">
-    <div class="meter" aria-hidden="true"><i id="micBar"></i></div>
-    <p id="micStatus" class="mic-status" role="status">Starting your microphone…</p>
-    <p id="micHeard" class="mic-heard"></p>
-    <div class="row">
-      <button id="testVoice" class="ghost" type="button">Play the interviewer's voice</button>
-    </div>
-  </div>
-
-  <div class="field">
-    <div class="subfield">
-      <label for="lang">Your accent</label>
-      <select id="lang">
-        <option value="en-US">English (US)</option>
-        <option value="en-GB">English (UK)</option>
-        <option value="en-HK">English (Hong Kong)</option>
-        <option value="en-SG">English (Singapore)</option>
-        <option value="en-IN">English (India)</option>
-        <option value="en-AU">English (Australia)</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="panel summary">
-    <h2>Your interview</h2>
-    <ul id="summary"></ul>
-  </div>
-
-  <div class="actions">
-    <button class="ghost back" data-to="2" type="button"><i aria-hidden="true">←</i> Back</button>
-    <button id="start" class="primary big" type="button">Start my interview <i aria-hidden="true">→</i></button>
-  </div>
-</main>
-
-<!-- Step 4 -->
-<main id="room" class="room view" hidden>
-  <div class="roombar">
-    <div class="roombar-title"><b id="roomTitle"></b><span id="timer" class="timer" aria-label="Time elapsed">0:00</span></div>
-    <div class="case-track">
-      <ol id="caseProgress" class="case-progress" aria-label="Interview sections"></ol>
-      <div class="progress" role="progressbar" id="progress" aria-label="Interview progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-        <div class="track"><i id="pctBar"></i></div>
-        <span id="pct" class="pct">0%</span>
+    <div class="demo" aria-hidden="true">
+      <div class="demo-top">
+        <span class="demo-live"><i></i>Live interview</span>
+        <span class="demo-pct"><b id="demoPct">25</b>%</span>
+      </div>
+      <div class="demo-track"><i id="demoBar"></i></div>
+      <div class="demo-body">
+        <div class="demo-stage">
+          <ol class="turn-guide">
+            <li data-t="0"><span>1</span>Listen</li>
+            <li data-t="1"><span>2</span>Think</li>
+            <li data-t="2"><span>3</span>Speak</li>
+          </ol>
+          <div class="orb" id="demoOrb" data-state="speaking"><i></i><i></i></div>
+          <p class="demo-state" id="demoState">Listen to the interviewer</p>
+        </div>
+        <div class="demo-log" id="demoLog">
+          <p class="who-interviewer"><b>Interviewer</b>Profit has fallen by a third in two years. How would you work out what happened?</p>
+        </div>
       </div>
     </div>
-    <div class="roombar-controls">
-      <label class="toggle">
-        <input type="checkbox" id="feedbackRoom">
-        <span class="switch" aria-hidden="true"></span>
-        <span>Coach tips</span>
-      </label>
-      <button id="endBtn" class="ghost small" type="button">End interview</button>
+  </section>
+
+  <section class="band reveal">
+    <p>Partners don't just check your answer. They watch <em>how you think</em>, how you handle pressure, and whether you can adapt when the question changes.</p>
+  </section>
+
+  <section id="how" class="lsec">
+    <p class="kicker reveal">How it works</p>
+    <h2 class="lh2 reveal">Four steps, <em>about 30 minutes.</em></h2>
+    <ol class="steps">
+      <li class="reveal"><span>01</span><h3>Choose a case</h3><p>Pick a category, then a case from foundation to advanced. Or practise your fit stories.</p></li>
+      <li class="reveal"><span>02</span><h3>Set it up</h3><p>Choose a real interview or coaching as you go, a full case or just one part, and how tough your interviewer is.</p></li>
+      <li class="reveal"><span>03</span><h3>Talk it through</h3><p>Answer out loud. Exhibits appear when they're shared, and the transcript follows along. Take all the time you need to think.</p></li>
+      <li class="reveal"><span>04</span><h3>See your results</h3><p>Get a decision, a rating on each criterion, and exactly what the next level required.</p></li>
+    </ol>
+  </section>
+
+  <section class="lsec split">
+    <div class="reveal">
+      <p class="kicker">Two ways to practise</p>
+      <h2 class="lh2">Train with a coach. <em>Then go without one.</em></h2>
+      <p class="lead">Switch between them at any point, even halfway through a case.</p>
     </div>
-  </div>
-
-  <div class="stage">
-    <aside class="side left">
-      <section>
-        <h2>Exhibits</h2>
-        <p id="noExhibits" class="empty">Charts and data appear here when the interviewer shares them.</p>
-        <div id="exhibits"></div>
-      </section>
-      <section>
-        <h2><label for="notes">Your notes</label></h2>
-        <textarea id="notes" rows="6" placeholder="Jot down your structure and maths"></textarea>
-      </section>
-    </aside>
-
-    <div class="centre">
-      <ol id="turnGuide" class="turn-guide" aria-label="What to do now">
-        <li data-turn="listen"><span>1</span>Listen</li>
-        <li data-turn="think"><span>2</span>Think</li>
-        <li data-turn="speak"><span>3</span>Speak</li>
-      </ol>
-      <div id="orb" class="orb" data-state="idle" aria-hidden="true"><i></i><i></i></div>
-      <div id="stateLabel" class="state-label" role="status" aria-live="polite">Connecting</div>
-      <div id="stateHint" class="state-hint"></div>
-      <button id="talk" class="primary big talk" type="button" disabled>Please wait</button>
-      <div id="coach" class="coach" hidden aria-live="polite"></div>
-      <details class="typed">
-        <summary>Prefer to type?</summary>
-        <textarea id="typed" rows="3" placeholder="Type your answer"></textarea>
-        <button id="sendTyped" class="ghost small" type="button">Send answer</button>
-      </details>
+    <div class="modes">
+      <div class="mode reveal">
+        <h3>Real interview</h3>
+        <p>No hints and no help, just like the day itself. Your assessment waits until the end.</p>
+      </div>
+      <div class="mode reveal">
+        <h3>Coach me as I go</h3>
+        <p>After each answer, your coach offers a short tip on your thinking. Hear it, or skip it and carry on.</p>
+      </div>
     </div>
+  </section>
 
-    <aside class="side right" aria-label="Transcript">
-      <h2>Transcript</h2>
-      <div id="transcript" class="transcript" aria-live="off"></div>
-    </aside>
-  </div>
+  <section id="results" class="lsec split results-sec">
+    <div class="reveal">
+      <p class="kicker">Your results</p>
+      <h2 class="lh2">Assessed on your thinking, <em>not your vocabulary.</em></h2>
+      <p class="lead">No marks for polished phrasing, and none lost for your accent or for pausing to think. The assessment covers what interviewers care about: how you structured the problem, what you did with the data, and where you landed.</p>
+      <ul class="checks">
+        <li>Rated on five problem-solving criteria</li>
+        <li>A level for each question, and what the next one required</li>
+        <li>A model answer and worked numbers once you finish</li>
+      </ul>
+    </div>
+    <div class="sample reveal" aria-label="Example of a results page">
+      <p class="sample-tag">Example</p>
+      <div class="sample-head"><b>64</b><small>/100</small><div><span>Interviewer's decision</span><strong>Borderline</strong></div></div>
+      <div class="sample-rows">
+        <div><span>Structuring the problem</span><em>At the bar</em><u style="--w:75%"></u></div>
+        <div><span>Identifying the important issues</span><em>At the bar</em><u style="--w:75%"></u></div>
+        <div><span>Working with facts and data</span><em>Borderline</em><u style="--w:50%"></u></div>
+        <div><span>Conclusions and recommendations</span><em>Borderline</em><u style="--w:50%"></u></div>
+        <div><span>Articulating the thinking</span><em>At the bar</em><u style="--w:75%"></u></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="cases" class="lsec">
+    <p class="kicker reveal">The cases</p>
+    <h2 class="lh2 reveal">Organised the way <em>you'll want to practise.</em></h2>
+    <div class="cats">
+      <div class="reveal"><h3>Profitability</h3><p>Find out why the money stopped, and what to do about it.</p></div>
+      <div class="reveal"><h3>Market entry and growth</h3><p>Size the opportunity and decide how to go after it.</p></div>
+      <div class="reveal"><h3>Investment decisions</h3><p>Make the call on a big bet, then stress-test it.</p></div>
+      <div class="reveal"><h3>Business model change</h3><p>Help a company reinvent how it makes money.</p></div>
+      <div class="reveal"><h3>Crisis and turnaround</h3><p>Stabilise a business when something has gone badly wrong.</p></div>
+      <div class="reveal"><h3>Fit and personal experience</h3><p>Stories that hold up when an interviewer keeps probing.</p></div>
+    </div>
+    <p class="levels reveal"><span><i></i>Foundation</span><span><i></i><i></i>Intermediate</span><span><i></i><i></i><i></i>Advanced</span></p>
+  </section>
+
+  <section class="lsec coachband reveal">
+    <div>
+      <p class="kicker">When you want a person</p>
+      <h2 class="lh2">Practise here. <em>Then sit down with a coach.</em></h2>
+      <p class="lead">Case Casa's 1-on-1 sessions are with former Principals, Associate Partners and Partners. Bring your results and spend the hour where it matters most.</p>
+    </div>
+    <a class="ghost big" href="https://cal.com/casecasacoaching/coachingsession" target="_blank" rel="noopener">Book a coaching session <i aria-hidden="true">→</i></a>
+  </section>
+
+  <section id="faq" class="lsec faq">
+    <p class="kicker reveal">Questions</p>
+    <h2 class="lh2 reveal">Good to <em>know.</em></h2>
+    <div class="reveal">
+      <details><summary>What do I need?</summary><p>A computer with a microphone, and Chrome, Edge or Safari. There's no camera and no avatar. If you'd rather not speak, you can type your answers.</p></details>
+      <details><summary>What happens if I pause to think?</summary><p>Nothing at all. Nothing is timing you, and the interviewer waits until you submit your answer. Pauses never count against you.</p></details>
+      <details><summary>Is this how McKinsey scores candidates?</summary><p>McKinsey doesn't publish its scoring rubric, and Case Casa isn't affiliated with McKinsey. Our criteria draw on what McKinsey publicly says its problem-solving interview assesses, such as how you structure ambiguous challenges and deal with facts and data. The scale and weightings are our own.</p></details>
+      <details><summary>Can I trust the score?</summary><p>Treat it as a practice signal, not a prediction. It's written by AI and can be wrong, and speech recognition sometimes mishears words. It can't tell you whether you'll get an offer.</p></details>
+      <details><summary>Does it replace a human coach?</summary><p>No. It gives you unlimited repetitions at any hour. A coach who has made these hiring decisions brings judgement that practice alone can't.</p></details>
+      <details><summary>Is my session recorded?</summary><p>Your audio isn't stored by the Practice Room, but a transcript of your answers and your results are saved. In Chrome, your browser's speech recognition sends audio to Google to turn it into text.</p></details>
+    </div>
+  </section>
+
+  <section class="lfinal reveal">
+    <h2 class="lh2">Your next case <em>can start now.</em></h2>
+    <a class="primary big" href="practice.html">Start an interview <i aria-hidden="true">→</i></a>
+  </section>
 </main>
 
-<!-- Step 5 -->
-<main id="report" class="page view" hidden>
-  <div id="reportBody"></div>
-  <div class="actions">
-    <a id="exportLink" class="ghost btnlink" href="#">Download transcript</a>
-    <span class="grow"></span>
-    <button id="backHome" class="ghost" type="button">Practise again</button>
-    <a class="primary btnlink" href="https://cal.com/casecasacoaching/coachingsession" target="_blank" rel="noopener">Review this with a coach <i aria-hidden="true">→</i></a>
-  </div>
-</main>
-
-<!-- My results -->
-<main id="results" class="page view" hidden>
-  <h1>My <em>results</em></h1>
-  <p class="lead" id="resultsLead"></p>
-  <ul id="history" class="history"></ul>
-  <div class="actions"><button id="resultsBack" class="ghost" type="button"><i aria-hidden="true">←</i> Back to practice</button></div>
-</main>
-
-<script src="preview.js"></script>
-<script type="module" src="app.js"></script>
+<footer class="lfoot">
+  <span>Case Casa Practice Room</span>
+  <span>Not affiliated with any consulting firm.</span>
+  <a href="mailto:info@casecasacoaching.com">info@casecasacoaching.com</a>
+</footer>
+<script src="landing.js"></script>
 </body>
 </html>

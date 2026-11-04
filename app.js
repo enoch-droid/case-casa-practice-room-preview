@@ -95,9 +95,9 @@ async function init() {
   $('start').onclick = startSession;
   $('testVoice').onclick = () => speakOnce('Hello. This is how your interviewer will sound.');
   $('lang').onchange = () => { stopMicTest(); startMicTest(); };
-  $('backHome').onclick = () => location.assign('./');
+  $('backHome').onclick = () => location.assign(location.pathname);
   $('navResults').onclick = openResults;
-  $('resultsBack').onclick = () => location.assign('./');
+  $('resultsBack').onclick = () => location.assign(location.pathname);
 
   loadVoices();
   speechSynthesis?.addEventListener?.('voiceschanged', loadVoices);
