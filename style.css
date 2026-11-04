@@ -99,7 +99,8 @@ textarea { resize: vertical; }
 .primary:hover i { transform: translateX(4px); }
 .big { padding: 17px 34px; font-size: 12px; }
 .ghost { background: none; color: var(--ice-2); border: 1px solid var(--line-2); padding: 14px 20px; }
-.ghost:hover { border-color: var(--ice); background: var(--glass-2); }
+.ghost:hover:not(:disabled) { border-color: var(--ice); background: var(--glass-2); }
+.ghost:disabled { opacity: .45; cursor: default; }
 .ghost.back:hover i { transform: translateX(-4px); }
 .small { padding: 8px 13px; font-size: 10.5px; }
 .ghost.danger { border-color: var(--rose); color: var(--rose); }

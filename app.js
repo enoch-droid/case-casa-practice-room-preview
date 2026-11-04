@@ -94,7 +94,7 @@ async function init() {
   $('to3').onclick = () => goTo(3);
   document.querySelectorAll('.back').forEach((b) => { b.onclick = () => goTo(Number(b.dataset.to)); });
   $('start').onclick = startSession;
-  $('testVoice').onclick = () => speakOnce('Hello. This is how your interviewer will sound.');
+  $('testVoice').onclick = playTestVoice;
   $('backHome').onclick = () => location.assign(location.pathname);
   $('navResults').onclick = openResults;
   $('resultsBack').onclick = () => location.assign(location.pathname);
@@ -214,7 +214,8 @@ function syncStep3() {
   startMicTest();
 }
 
-const mic = { stream: null, ctx: null, raf: 0, rec: null, wanted: false };
+const mic = { stream: null, ctx: null, raf: 0, rec: null, wanted: false, muted: false };
+const ECHO_GAP_MS = 350; // lets the speakers go quiet before the microphone listens again
 
 async function startMicTest() {
   const status = $('micStatus');
@@ -253,7 +254,7 @@ function drawMeter() {
       an.getByteTimeDomainData(data);
       let peak = 0;
       for (const v of data) peak = Math.max(peak, Math.abs(v - 128));
-      $('micBar').style.width = `${Math.min(100, peak * 2.4)}%`;
+      $('micBar').style.width = mic.muted ? '0' : `${Math.min(100, peak * 2.4)}%`;
       mic.raf = requestAnimationFrame(tick);
     };
     tick();
@@ -266,12 +267,13 @@ function listenForTest() {
   rec.interimResults = true;
   rec.lang = SPEECH_LANG;
   rec.onresult = (e) => {
+    if (mic.muted) return; // that is the interviewer's sample voice, not the candidate
     const text = [...e.results].map((r) => r[0].transcript).join(' ').trim();
     $('micHeard').textContent = `We heard: "${text}"`;
     $('micStatus').className = 'mic-status ok';
     $('micStatus').textContent = '✓ We can hear you. You\'re ready.';
   };
-  rec.onend = () => { if (mic.wanted) { try { listenForTest(); } catch { /* retried on next end */ } } };
+  rec.onend = () => { if (mic.wanted && !mic.muted) { try { listenForTest(); } catch { /* retried on next end */ } } };
   mic.rec = rec;
   try { rec.start(); } catch { /* already running */ }
 }
@@ -293,10 +295,37 @@ function loadVoices() {
   S.voices.coach = pick(['Google UK English Female', 'Samantha', 'Karen', 'Google US English']) || en[1] || en[0] || null;
 }
 
-function speakOnce(text) {
+/** Plays a sample of the interviewer's voice with listening paused, so the mic can't hear the speakers. */
+function playTestVoice() {
+  if (mic.muted) return;
+  const status = $('micStatus');
+  const before = { text: status.textContent, cls: status.className };
+  mic.muted = true;
+  $('testVoice').disabled = true;
+  status.className = 'mic-status';
+  status.textContent = 'Playing the interviewer\'s voice. Your mic is paused.';
+  $('micHeard').textContent = '';
+  try { mic.rec?.stop(); } catch { /* not running */ }
+
+  let finished = false;
+  const done = () => {
+    if (finished) return;
+    finished = true;
+    clearTimeout(watchdog);
+    setTimeout(() => {
+      mic.muted = false;
+      $('testVoice').disabled = false;
+      status.className = before.cls === 'mic-status bad' ? before.cls : 'mic-status';
+      status.textContent = before.cls === 'mic-status bad' ? before.text : 'Your mic is on. Say something…';
+      if (mic.wanted) listenForTest();
+    }, ECHO_GAP_MS);
+  };
+  const watchdog = setTimeout(done, 9000);
   speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
+  const u = new SpeechSynthesisUtterance('Hello. This is how your interviewer will sound.');
   u.voice = S.voices.interviewer;
+  u.onend = done;
+  u.onerror = done;
   speechSynthesis.speak(u);
 }
 
@@ -629,7 +658,8 @@ function startListening() {
   if (!S.readyAt) S.readyAt = performance.now();
   S.finals = ''; S.interim = ''; S.recWanted = true;
   setState('thinking');
-  openRecognizer();
+  clearTimeout(S.openTimer);
+  S.openTimer = setTimeout(openRecognizer, ECHO_GAP_MS); // the interviewer's last word must not be heard as an answer
 }
 
 function becomeTyping() {
@@ -671,6 +701,7 @@ function openRecognizer() {
 
 function stopRecognizer() {
   S.recWanted = false;
+  clearTimeout(S.openTimer);
   try { S.rec?.stop(); } catch { /* not running */ }
 }
 
