@@ -5,6 +5,7 @@ const el = (tag, props = {}, ...kids) => {
   return n;
 };
 const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const SPEECH_LANG = 'en-US';
 const motionOK = () => !matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const CHOICES = {
@@ -43,7 +44,7 @@ const S = {
   cases: [], caseId: null, sessionId: null, step: 1,
   state: 'idle', queue: [], speakingNow: false, streamOpen: false, ending: false, discard: false,
   rec: null, finals: '', interim: '', recWanted: false,
-  readyAt: 0, firstSpeechAt: 0, lang: 'en-US', offer: null, liveNode: null,
+  readyAt: 0, firstSpeechAt: 0, offer: null, liveNode: null,
   sectionCount: 1, stageAt: 0, answersInStage: 0, pct: 0,
   voices: { interviewer: null, coach: null }, micFailed: false, currentVoice: null, startedAt: 0,
 };
@@ -94,7 +95,6 @@ async function init() {
   document.querySelectorAll('.back').forEach((b) => { b.onclick = () => goTo(Number(b.dataset.to)); });
   $('start').onclick = startSession;
   $('testVoice').onclick = () => speakOnce('Hello. This is how your interviewer will sound.');
-  $('lang').onchange = () => { stopMicTest(); startMicTest(); };
   $('backHome').onclick = () => location.assign(location.pathname);
   $('navResults').onclick = openResults;
   $('resultsBack').onclick = () => location.assign(location.pathname);
@@ -264,7 +264,7 @@ function listenForTest() {
   const rec = new Recognition();
   rec.continuous = true;
   rec.interimResults = true;
-  rec.lang = $('lang').value;
+  rec.lang = SPEECH_LANG;
   rec.onresult = (e) => {
     const text = [...e.results].map((r) => r[0].transcript).join(' ').trim();
     $('micHeard').textContent = `We heard: "${text}"`;
@@ -305,7 +305,6 @@ function speakOnce(text) {
 async function startSession() {
   stopMicTest();
   const c = currentCase();
-  S.lang = $('lang').value;
   const part = CHOICES.length.value === 'part' ? Number($('part').value) : null;
   const feedback = CHOICES.feedback.value === 'on';
   const res = await fetch('/api/sessions', {
@@ -643,7 +642,7 @@ function openRecognizer() {
   const rec = new Recognition();
   rec.continuous = true;
   rec.interimResults = true;
-  rec.lang = S.lang;
+  rec.lang = SPEECH_LANG;
   rec.onresult = (e) => {
     if (!S.firstSpeechAt) S.firstSpeechAt = performance.now();
     if (S.state === 'thinking') setState('answering');
