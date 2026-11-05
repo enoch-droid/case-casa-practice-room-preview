@@ -1,3 +1,3 @@
-# Case Casa Practice Room: preview
+# Case Casa Practice Room
 
-A static preview of the interface. The interviewer follows a script and results are a labelled sample. Generated from a private repository.
+This address redirects to the live site: https://case-casa-practice-room.onrender.com
