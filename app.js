@@ -291,8 +291,9 @@ function stopMicTest() {
 function loadVoices() {
   const en = (speechSynthesis?.getVoices?.() || []).filter((v) => v.lang?.startsWith('en'));
   const pick = (names) => names.map((n) => en.find((v) => v.name.includes(n))).find(Boolean);
-  S.voices.interviewer = pick(['Google UK English Male', 'Daniel', 'Google US English', 'Samantha']) || en[0] || null;
-  S.voices.coach = pick(['Google UK English Female', 'Samantha', 'Karen', 'Google US English']) || en[1] || en[0] || null;
+  // Browsers don't label a voice's gender, so these are chosen by name. The coach is deliberately a different voice.
+  S.voices.interviewer = pick(['Google UK English Female', 'Samantha', 'Martha', 'Google US English', 'Serena', 'Karen', 'Moira', 'Catherine', 'Microsoft Zira', 'Microsoft Sonia', 'Microsoft Aria']) || en[0] || null;
+  S.voices.coach = pick(['Google UK English Male', 'Daniel', 'Arthur', 'Aaron', 'Microsoft David', 'Microsoft Ryan']) || en.find((v) => v !== S.voices.interviewer) || en[0] || null;
 }
 
 /** Plays a sample of the interviewer's voice with listening paused, so the mic can't hear the speakers. */
@@ -765,71 +766,56 @@ async function finish() {
   renderReport(body);
 }
 
-function countUp(node, target) {
-  if (!motionOK() || !target) { node.textContent = target || 'n/a'; return; }
-  const start = performance.now();
-  const tick = (t) => {
-    const p = Math.min(1, (t - start) / 1100);
-    node.textContent = Math.round(target * (1 - (1 - p) ** 3));
-    if (p < 1) requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
+const SCALE = [
+  [1, 'Below the bar', 'Would not advance'],
+  [2, 'Borderline', 'Could go either way'],
+  [3, 'At the bar', 'Would advance'],
+  [4, 'Above the bar', 'Stands out'],
+];
+const RATING_WORD = Object.fromEntries(SCALE.map(([n, w]) => [n, w]));
+
+function ratingScale(current) {
+  return el('ol', { className: 'scale', 'aria-label': 'Rating scale, lowest to highest' }, ...SCALE.map(([n, word, meaning], i) => {
+    const li = el('li', { className: n === current ? 'now' : '' }, el('b', { textContent: word }), el('span', { textContent: meaning }));
+    li.style.animationDelay = `${i * 70}ms`;
+    return li;
+  }));
 }
 
-const RATING_LABEL = { 0: 'Not observed', 1: 'Below the bar', 2: 'Borderline', 3: 'At the bar', 4: 'Above the bar' };
-
-function renderReport({ report: r, previousScore, modelAnswer, workedNumbers }) {
-  let n = 0, delay = 0;
-  const sect = (title, ...kids) => {
-    const s = el('section', { className: 'sect' },
-      el('div', { className: 'sect-head' }, el('span', { textContent: ++n }), el('h2', { textContent: title })), ...kids);
-    s.style.animationDelay = `${(delay += 110)}ms`;
-    return s;
-  };
-  const bullets = (items) => el('ul', {}, ...items.map((t) => el('li', { textContent: t })));
-  const change = previousScore != null && r.overall_score ? r.overall_score - previousScore : null;
-  const scoreNode = el('b', { textContent: '0' });
-
+function renderReport({ report: r, previousGrade, modelAnswer, workedNumbers }) {
+  const reviews = r.question_reviews ?? [];
+  const heading = r.partial ? 'Overall so far' : 'Overall';
   const hero = el('div', { className: 'hero view' },
-    el('div', { className: 'bigscore' }, scoreNode, r.overall_score ? el('small', { textContent: '/100' }) : ''),
-    el('div', {},
-      el('p', { className: 'hero-label', textContent: 'Interviewer\'s decision' }),
-      el('p', { className: 'verdict', textContent: r.verdict }),
-      change != null ? el('span', { className: 'chip', textContent: `${change >= 0 ? '+' : ''}${change} since your last interview` }) : '',
-      el('p', { textContent: r.headline })));
+    el('p', { className: 'hero-label', textContent: heading }),
+    el('p', { className: `grade g${r.grade_rating ?? ''}`, textContent: r.grade ?? r.verdict ?? 'Not yet rated' }),
+    el('p', { className: 'headline', textContent: r.headline }),
+    r.partial ? el('p', { className: 'chip', textContent: `Based on the ${r.questions_reached} of ${r.total_questions} questions you reached` }) : '',
+    previousGrade ? el('p', { className: 'chip', textContent: `Last interview: ${previousGrade}` }) : '',
+    ratingScale(r.grade_rating));
 
-  const parts = [hero];
-  const bars = [];
-  parts.push(sect('How you were rated', ...r.scores.map((s) => {
-    const fill = el('i');
-    const legacy = s.rating == null;
-    bars.push([fill, legacy ? s.score || 0 : s.rating * 25]);
-    return el('div', { className: 'score' },
-      el('div', {},
-        el('div', { className: 'score-head' }, el('b', { textContent: s.dimension }), el('span', { className: `rating r${s.rating ?? ''}`, textContent: legacy ? (s.score ? `${s.score}/100` : 'Not observed') : RATING_LABEL[s.rating] })),
-        el('div', { className: 'bar' }, fill),
-        el('p', { className: 'ev', textContent: s.evidence }),
-        s.advice ? el('p', {}, el('span', { className: 'tag', textContent: 'At the bar' }), s.advice) : ''));
-  })));
-  if (r.question_reviews?.length) {
-    parts.push(sect('Question by question', ...r.question_reviews.map((q) => el('div', { className: 'qreview' },
-      el('div', { className: 'q-level', title: 'Level reached, out of 3' }, el('small', { textContent: 'Level' }), `${q.level}`),
-      el('div', {},
-        el('b', { textContent: q.question }),
-        el('p', {}, el('span', { className: 'tag', textContent: 'Covered' }), q.covered),
-        el('p', {}, el('span', { className: 'tag', textContent: 'For the next level' }), q.missing))))));
-  }
-  if (r.priorities?.length) parts.push(sect('What would change the decision', bullets(r.priorities)));
-  if (r.strengths?.length) parts.push(sect('Strengths to keep', bullets(r.strengths)));
+  const questions = reviews.map((q, i) => {
+    const card = el('section', { className: 'qcard' },
+      el('div', { className: 'qcard-head' },
+        el('div', {},
+          el('p', { className: 'qcard-kicker', textContent: `Question ${i + 1}` }),
+          el('h2', { textContent: q.skill ?? q.question })),
+        el('span', { className: `rating r${q.rating}`, textContent: RATING_WORD[q.rating] ?? '' })),
+      q.question_asked ? el('p', { className: 'qcard-asked', textContent: q.question_asked }) : '',
+      el('p', {}, el('span', { className: 'tag', textContent: 'What you did' }), q.covered),
+      el('p', {}, el('span', { className: 'tag', textContent: 'To go higher' }), q.missing));
+    card.style.animationDelay = `${150 + i * 110}ms`;
+    return card;
+  });
+
+  const extras = [];
   if (modelAnswer) {
-    parts.push(sect('What a strong answer looks like', el('p', { textContent: modelAnswer }),
-      el('details', {}, el('summary', { textContent: 'See the worked numbers' }), el('p', { className: 'worked', textContent: workedNumbers }))));
+    extras.push(el('details', { className: 'extra' }, el('summary', { textContent: 'What a strong answer looks like' }),
+      el('p', { textContent: modelAnswer }),
+      el('p', { className: 'worked', textContent: workedNumbers })));
   }
-  parts.push(sect('Your next drill', el('p', { textContent: r.next_drill })));
+  if (r.next_drill) extras.push(el('p', { className: 'drill' }, el('span', { className: 'tag', textContent: 'Your next drill' }), r.next_drill));
 
-  $('reportBody').replaceChildren(...parts);
-  countUp(scoreNode, r.overall_score);
-  requestAnimationFrame(() => requestAnimationFrame(() => bars.forEach(([f, v]) => { f.style.width = `${v}%`; })));
+  $('reportBody').replaceChildren(hero, ...questions, ...extras);
 }
 
 // ---------- my results ----------

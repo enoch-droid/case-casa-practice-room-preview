@@ -13,9 +13,9 @@
 <link rel="stylesheet" href="landing.css">
 </head>
 <body class="landing">
-<div class="banner">Preview: try the full flow with a scripted interviewer and sample results. The live version uses AI.</div>
+<div class="banner">Preview: try the flow with a small set of cases, a scripted interviewer and sample results. The live version uses AI.</div>
 <header class="lnav">
-  <a class="brand" href="./"><span class="brand-mark" aria-hidden="true"></span>Case Casa <span>Practice Room</span></a>
+  <a class="brand" href="./">Case Casa <span>Practice Room</span></a>
   <nav aria-label="Main">
     <a href="#how">How it works</a>
     <a href="#results">Your results</a>
@@ -38,7 +38,7 @@
       <ul class="lhero-notes">
         <li>Voice only, no camera</li>
         <li>Any time of day</li>
-        <li>From the team at Case Casa Coaching</li>
+        <li>Built by partner-level consultants</li>
       </ul>
     </div>
 
@@ -55,7 +55,8 @@
             <li data-t="1"><span>2</span>Think</li>
             <li data-t="2"><span>3</span>Speak</li>
           </ol>
-          <div class="orb" id="demoOrb" data-state="speaking"><i></i><i></i></div>
+          <div class="orb" id="demoOrb" data-state="speaking"><img class="face" src="https://images.unsplash.com/photo-1685760259914-ee8d2c92d2e0?w=320&h=320&fit=crop&crop=faces&auto=format&q=80" alt="" width="160" height="160" onerror="this.remove()"><i></i><i></i></div>
+          <p class="orb-caption">Your AI interviewer</p>
           <p class="demo-state" id="demoState">Listen to the interviewer</p>
         </div>
         <div class="demo-log" id="demoLog">
@@ -63,6 +64,28 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <section class="proof" aria-label="Who built this">
+    <div class="proof-who reveal">
+      <p class="kicker">Built by partner-level consultants</p>
+      <p class="proof-line">Case Casa is run by former Principals, Associate Partners and Partners from top-tier strategy firms: the people who decided who got the offer.</p>
+    </div>
+    <div class="marquee reveal">
+      <p class="marquee-label">Prepare for interviews at firms like</p>
+      <div class="marquee-window">
+        <div class="marquee-track">
+          <ul><li>McKinsey &amp; Company</li><li>BCG</li><li>Bain &amp; Company</li><li>Kearney</li><li>Oliver Wyman</li><li>Roland Berger</li><li>Strategy&amp;</li><li>L.E.K. Consulting</li><li>Arthur D. Little</li><li>EY-Parthenon</li><li>Monitor Deloitte</li><li>OC&amp;C Strategy Consultants</li><li>Simon-Kucher</li></ul>
+          <ul aria-hidden="true"><li>McKinsey &amp; Company</li><li>BCG</li><li>Bain &amp; Company</li><li>Kearney</li><li>Oliver Wyman</li><li>Roland Berger</li><li>Strategy&amp;</li><li>L.E.K. Consulting</li><li>Arthur D. Little</li><li>EY-Parthenon</li><li>Monitor Deloitte</li><li>OC&amp;C Strategy Consultants</li><li>Simon-Kucher</li></ul>
+        </div>
+      </div>
+    </div>
+    <dl class="facts reveal">
+      <div><dt>Partner-level</dt><dd>experience behind the method</dd></div>
+      <div><dt>30 min</dt><dd>for a full mock interview</dd></div>
+      <div><dt>6 min</dt><dd>to drill one question</dd></div>
+      <div><dt>24/7</dt><dd>whenever you want to practise</dd></div>
+    </dl>
   </section>
 
   <section class="band reveal">
@@ -76,7 +99,7 @@
       <li class="reveal"><span>01</span><h3>Choose a case</h3><p>Pick a category, then a case from foundation to advanced. Or practise your fit stories.</p></li>
       <li class="reveal"><span>02</span><h3>Set it up</h3><p>Choose a real interview or coaching as you go, a full case or just one part, and how tough your interviewer is.</p></li>
       <li class="reveal"><span>03</span><h3>Talk it through</h3><p>Answer out loud. Exhibits appear when they're shared, and the transcript follows along. Take all the time you need to think.</p></li>
-      <li class="reveal"><span>04</span><h3>See your results</h3><p>Get a decision, a rating on each criterion, and exactly what the next level required.</p></li>
+      <li class="reveal"><span>04</span><h3>See your results</h3><p>See where you stand against the bar, overall and on each question, and what would take you higher.</p></li>
     </ol>
   </section>
 
@@ -104,20 +127,20 @@
       <h2 class="lh2">Assessed on your thinking, <em>not your vocabulary.</em></h2>
       <p class="lead">No marks for polished phrasing, and none lost for your accent or for pausing to think. The assessment covers what interviewers care about: how you structured the problem, what you did with the data, and where you landed.</p>
       <ul class="checks">
-        <li>Rated on five problem-solving criteria</li>
-        <li>A level for each question, and what the next one required</li>
+        <li>One clear overall rating against the bar to advance</li>
+        <li>A rating for each question, by the skill it tests</li>
+        <li>Stop early, and you're rated only on what you reached</li>
         <li>A model answer and worked numbers once you finish</li>
       </ul>
     </div>
     <div class="sample reveal" aria-label="Example of a results page">
       <p class="sample-tag">Example</p>
-      <div class="sample-head"><b>64</b><small>/100</small><div><span>Interviewer's decision</span><strong>Borderline</strong></div></div>
+      <div class="sample-head"><div><span>Overall</span><strong>At the bar</strong></div></div>
       <div class="sample-rows">
-        <div><span>Structuring the problem</span><em>At the bar</em><u style="--w:75%"></u></div>
-        <div><span>Identifying the important issues</span><em>At the bar</em><u style="--w:75%"></u></div>
-        <div><span>Working with facts and data</span><em>Borderline</em><u style="--w:50%"></u></div>
-        <div><span>Conclusions and recommendations</span><em>Borderline</em><u style="--w:50%"></u></div>
-        <div><span>Articulating the thinking</span><em>At the bar</em><u style="--w:75%"></u></div>
+        <div><span>Question 1: Analytical thinking</span><em>At the bar</em><u style="--w:75%"></u></div>
+        <div><span>Question 2: Quantitative thinking</span><em>Above the bar</em><u style="--w:100%"></u></div>
+        <div><span>Question 3: Conceptual thinking</span><em>Borderline</em><u style="--w:50%"></u></div>
+        <div><span>Question 4: Synthesis</span><em>At the bar</em><u style="--w:75%"></u></div>
       </div>
     </div>
   </section>
@@ -136,6 +159,13 @@
     <p class="levels reveal"><span><i></i>Foundation</span><span><i></i><i></i>Intermediate</span><span><i></i><i></i><i></i>Advanced</span></p>
   </section>
 
+  <section class="voice reveal">
+    <blockquote>
+      <p>“Very constructive and targeted feedback, particularly on exhibit analysis.”</p>
+      <footer>Candidate preparing for a Bain final round, on 1-on-1 Case Casa coaching</footer>
+    </blockquote>
+  </section>
+
   <section class="lsec coachband reveal">
     <div>
       <p class="kicker">When you want a person</p>
@@ -151,8 +181,9 @@
     <div class="reveal">
       <details><summary>What do I need?</summary><p>A computer with a microphone, and Chrome, Edge or Safari. There's no camera and no avatar. If you'd rather not speak, you can type your answers.</p></details>
       <details><summary>What happens if I pause to think?</summary><p>Nothing at all. Nothing is timing you, and the interviewer waits until you submit your answer. Pauses never count against you.</p></details>
-      <details><summary>Is this how McKinsey scores candidates?</summary><p>McKinsey doesn't publish its scoring rubric, and Case Casa isn't affiliated with McKinsey. Our criteria draw on what McKinsey publicly says its problem-solving interview assesses, such as how you structure ambiguous challenges and deal with facts and data. The scale and weightings are our own.</p></details>
-      <details><summary>Can I trust the score?</summary><p>Treat it as a practice signal, not a prediction. It's written by AI and can be wrong, and speech recognition sometimes mishears words. It can't tell you whether you'll get an offer.</p></details>
+      <details><summary>Is this how the firms score candidates?</summary><p>Consulting firms don't publish their scoring rubrics, and Case Casa isn't affiliated with any of them. Our assessment focuses on what top firms say they look for, such as how you structure ambiguous challenges and deal with facts and data. The rating scale is our own.</p></details>
+      <details><summary>Can I trust the rating?</summary><p>Treat it as a practice signal, not a prediction. It's written by AI and can be wrong, and speech recognition sometimes mishears words. It can't tell you whether you'll get an offer.</p></details>
+      <details><summary>What if I stop before the end?</summary><p>You're rated only on the questions you reached. Stopping early doesn't lower your rating, and your results show what it's based on.</p></details>
       <details><summary>Does it replace a human coach?</summary><p>No. It gives you unlimited repetitions at any hour. A coach who has made these hiring decisions brings judgement that practice alone can't.</p></details>
       <details><summary>Is my session recorded?</summary><p>Your audio isn't stored by the Practice Room, but a transcript of your answers and your results are saved. In Chrome, your browser's speech recognition sends audio to Google to turn it into text.</p></details>
     </div>
@@ -166,7 +197,7 @@
 
 <footer class="lfoot">
   <span>Case Casa Practice Room</span>
-  <span>Not affiliated with any consulting firm.</span>
+  <span>Not affiliated with or endorsed by any consulting firm named on this page.</span>
   <a href="mailto:info@casecasacoaching.com">info@casecasacoaching.com</a>
 </footer>
 <script src="landing.js"></script>
